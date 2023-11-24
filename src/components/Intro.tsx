@@ -38,7 +38,7 @@ export const Intro = () => {
   }, [typeWriter]);
 
   return (
-    <Container maxWidth={"lg"} sx={{ marginTop: 8 }}>
+    <Container maxWidth={"lg"}>
       <Grid container spacing={2}>
         <Grid xs={12} md={6}>
           <Stack gap={4}>

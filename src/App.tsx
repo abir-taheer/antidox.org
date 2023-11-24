@@ -23,17 +23,13 @@ function App() {
   return (
     <CssVarsProvider theme={theme}>
       <Provider store={jotaiStore}>
-        <Container maxWidth={"lg"}>
+        <Container maxWidth={"lg"} sx={{ paddingTop: 6, paddingBottom: 6 }}>
           <Stack gap={4}>
             <Intro />
-
             <Divider />
-
-            <LoadedModelContext content={Steps} />
-
-            <Divider />
-
             <FAQs />
+            <Divider />
+            <LoadedModelContext content={Steps} />
           </Stack>
         </Container>
       </Provider>
