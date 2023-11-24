@@ -30,8 +30,7 @@ export const blurImageWorker = () => {
       let sum = 0;
       const delta = 5;
       const alpha_left = 1 / (2 * Math.PI * delta * delta);
-      const getStep = () =>
-        Math.random() > 0.5 ? 2 : Math.random() > 0.5 ? 2 : 3;
+      const getStep = () => 2 + Math.floor(Math.random() * 3);
 
       for (let y = -blur; y <= blur; y += getStep()) {
         for (let x = -blur; x <= blur; x += getStep()) {
