@@ -16,10 +16,6 @@ export const SelectImageStep = () => {
         First, choose an image from your gallery
       </Typography>
 
-      <UploadImageButton fullWidth variant={file ? "outlined" : undefined}>
-        Select Image
-      </UploadImageButton>
-
       {file && (
         <>
           <UploadedImagePreview />
@@ -49,6 +45,10 @@ export const SelectImageStep = () => {
           </Typography>
         </>
       )}
+
+      <UploadImageButton fullWidth variant={file ? "outlined" : undefined}>
+        Select {file && "Another"} Image
+      </UploadImageButton>
     </>
   );
 };
