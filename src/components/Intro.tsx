@@ -1,5 +1,6 @@
 import { Container, Grid, Stack, Typography } from "@mui/joy";
 import { useCallback, useLayoutEffect, useState } from "react";
+import { useIsWebView } from "../utils/useIsWebView.ts";
 
 const originalPrefix = "F**k";
 const targetPrefix = "Resist";
@@ -8,6 +9,7 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const Intro = () => {
   const [prefix, setPrefix] = useState(originalPrefix);
+  const isWebview = useIsWebView();
 
   const typeWriter = useCallback(async () => {
     let value = originalPrefix;
@@ -54,6 +56,18 @@ export const Intro = () => {
               Use AI to blur out the faces from your photos before you post
               them.
             </Typography>
+
+            {isWebview && (
+              <Typography
+                level={"body-lg"}
+                color={"danger"}
+                textAlign={"center"}
+              >
+                HEADS UP: You're using an in-app browser. This app might be
+                super slow or not work correctly. Open it in chrome or safari
+                instead!
+              </Typography>
+            )}
           </Stack>
         </Grid>
 
