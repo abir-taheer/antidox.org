@@ -1,98 +1,61 @@
 import { useAtomValue } from "jotai";
 import { useCallback } from "react";
+import { blurRadiusAtom } from "../variables/blurRadius.ts";
 import { detectionsAtom } from "../variables/detections.ts";
 import { offscreenImageAtom } from "../variables/offscreenCanvas.ts";
-import { useCanvasGaussianBlur } from "./useCanvasGaussianBlur.ts";
+import WebWorker from "../workers/WebWorker.ts";
+import { blurImageWorker } from "../workers/blurImage.worker.ts";
 
 export const useBlurImage = () => {
-  const blurCanvas = useCanvasGaussianBlur();
   const image = useAtomValue(offscreenImageAtom);
   const detections = useAtomValue(detectionsAtom);
+  const blurRadius = useAtomValue(blurRadiusAtom);
 
-  const blurImage = useCallback(() => {
-    if (!image) {
-      alert("error, no image uploaded");
-      return;
-    }
+  const blurImage = useCallback(
+    () =>
+      new Promise<string>((resolve) => {
+        if (!image) {
+          alert("error, no image uploaded");
+          return;
+        }
 
-    if (!detections) {
-      alert("error, no faces loaded");
-      return;
-    }
+        if (!detections) {
+          alert("error, no faces loaded");
+          return;
+        }
 
-    const canvas = new OffscreenCanvas(image.width, image.height);
-    const context = canvas.getContext("2d")!;
+        const canvas = new OffscreenCanvas(image.width, image.height);
+        const context = canvas.getContext("2d")!;
+        context.drawImage(image, 0, 0);
 
-    context.drawImage(image, 0, 0);
+        const imageDataBuffer = context.getImageData(
+          0,
+          0,
+          canvas.width,
+          canvas.height,
+        ).data.buffer;
 
-    detections.forEach((detection) => {
-      if (!detection.enabled) {
+        const worker = new WebWorker(blurImageWorker);
+
+        worker.onmessage = (event) => {
+          resolve(event.data.url);
+        };
+
+        worker.postMessage(
+          {
+            imageDataBuffer,
+            detections,
+            blurRadius,
+            width: image.width,
+            height: image.height,
+          },
+          [imageDataBuffer],
+        );
+
         return;
-      }
-
-      let targetWidth = detection.width;
-
-      if (targetWidth > 200) {
-        targetWidth = 200;
-      }
-
-      const scaleFactor = detection.width / targetWidth;
-      const targetHeight = Math.floor(detection.height / scaleFactor);
-
-      const box = new OffscreenCanvas(targetWidth, targetHeight);
-      const boxContext = box.getContext("2d")!;
-
-      boxContext.drawImage(
-        image,
-        detection.x,
-        detection.y,
-        detection.width,
-        detection.height,
-        0,
-        0,
-        targetWidth,
-        targetHeight,
-      );
-
-      blurCanvas(box);
-
-      // An intermediary to resize back to original dimensions
-      const fullSizeBox = new OffscreenCanvas(
-        detection.width,
-        detection.height,
-      );
-
-      const fullSizeBoxContext = fullSizeBox.getContext("2d")!;
-      fullSizeBoxContext.drawImage(
-        box,
-        0,
-        0,
-        targetWidth,
-        targetHeight,
-        0,
-        0,
-        detection.width,
-        detection.height,
-      );
-
-      context.putImageData(
-        fullSizeBoxContext.getImageData(
-          0,
-          0,
-          detection.width,
-          detection.height,
-        ),
-        detection.x,
-        detection.y,
-        0,
-        0,
-        detection.width,
-        detection.height,
-      );
-    });
-
-    return canvas;
-  }, [detections, blurCanvas, image]);
+      }),
+    [blurRadius, detections, image],
+  );
 
   return blurImage;
 };

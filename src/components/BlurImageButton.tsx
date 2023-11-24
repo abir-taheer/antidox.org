@@ -17,32 +17,14 @@ export const BlurImageButton = ({ ...buttonProps }: BlurImageButtonProps) => {
   const onClick = useCallback(() => {
     setIsBlurring(true);
 
-    setTimeout(async () => {
-      try {
-        const canvas = blur();
-        if (!canvas) {
-          throw new Error("no canvas");
-        }
-
-        const blob = await canvas.convertToBlob({
-          type: "image/png",
-          quality: 1,
-        });
-
-        const url = URL.createObjectURL(blob);
-
-        setResultUrl(url);
+    blur()
+      .then((result) => {
+        setResultUrl(result);
         setStep(3);
-      } catch (e: unknown) {
-        if (e instanceof Error) {
-          alert("error: " + e.message);
-        }
-      } finally {
+      })
+      .finally(() => {
         setIsBlurring(false);
-      }
-
-      setIsBlurring(false);
-    }, 200);
+      });
   }, [blur, setIsBlurring, setResultUrl, setStep]);
 
   return <Button {...buttonProps} loading={isBlurring} onClick={onClick} />;
