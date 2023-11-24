@@ -26,6 +26,10 @@ export const useBlurImage = () => {
     context.drawImage(image, 0, 0);
 
     detections.forEach((detection) => {
+      if (!detection.enabled) {
+        return;
+      }
+
       let targetWidth = detection.width;
 
       if (targetWidth > 200) {
