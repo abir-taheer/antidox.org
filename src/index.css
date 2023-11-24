@@ -1,0 +1,50 @@
+:root {
+    --color-1: #f19066;
+    --color-2: #e66767;
+    --color-3: #546de5;
+}
+
+body {
+    background-color: #fffaedaf;
+}
+
+
+.title {
+    -webkit-animation: color-change 8s infinite ;
+    -moz-animation: color-change 8s infinite ;
+    -o-animation: color-change 8s infinite ;
+    -ms-animation: color-change 8s infinite ;
+    animation: color-change 8s infinite ;
+}
+
+@-webkit-keyframes color-change {
+    0% { color: var(--color-1); }
+    33% { color: var(--color-2); }
+    66% { color: var(--color-3); }
+    100% { color: var(--color-1); }
+}
+@-moz-keyframes color-change {
+    0% { color: var(--color-1); }
+    33% { color: var(--color-2); }
+    66% { color: var(--color-3); }
+    100% { color: var(--color-1); }
+}
+
+@-ms-keyframes color-change {
+    0% { color: var(--color-1); }
+    33% { color: var(--color-2); }
+    66% { color: var(--color-3); }
+    100% { color: var(--color-1); }
+}
+@-o-keyframes color-change {
+    0% { color: var(--color-1); }
+    33% { color: var(--color-2); }
+    66% { color: var(--color-3); }
+    100% { color: var(--color-1); }
+}
+@keyframes color-change {
+    0% { color: var(--color-1); }
+    33% { color: var(--color-2); }
+    66% { color: var(--color-3); }
+    100% { color: var(--color-1); }
+}
